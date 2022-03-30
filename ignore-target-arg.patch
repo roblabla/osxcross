@@ -1,0 +1,25 @@
+diff --git a/main.cpp b/main.cpp
+index 9856386..b85d885 100644
+--- a/main.cpp
++++ b/main.cpp
+@@ -198,6 +198,11 @@ bool liblto(Target &target, const char *opt, const char *, char **) {
+   return true;
+ }
+ 
++bool fixupTarget(Target &target, const char *opt, const char *, char **) {
++  // TODO: Check target matches, modulo darwin version.
++  return true;
++}
++
+ bool checkincludepath(Target &, const char *opt, const char *path, char **) {
+ #ifndef __APPLE__
+   constexpr const char *DangerousIncludePaths[] = { "/usr/include",
+@@ -268,6 +273,8 @@ constexpr struct Opt {
+   {"-icxx-isystem", checkincludepath, true, true},
+   {"-cxx-isystem", checkincludepath, true, true},
+   {"-I", checkincludepath, true, true},
++  {"-target", fixupTarget, true, false},
++  {"--target", fixupTarget, true, false},
+ 
+   // sets a custom path for the compiler
+   {"-foc-compiler-path", compilerpath, true, false, "="},

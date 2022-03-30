@@ -1,0 +1,36 @@
+diff --git a/target.cpp b/target.cpp
+index 82bf65c..e2206ef 100644
+--- a/target.cpp
++++ b/target.cpp
+@@ -773,14 +815,16 @@ bool Target::setup() {
+   }
+ 
+   auto addCXXHeaderPath = [&](const std::string &path) {
+-    fargs.push_back(isClang() ? "-cxx-isystem" : "-isystem");
++    fargs.push_back("-isystem");
+     fargs.push_back(path);
+   };
+ 
+-  addCXXHeaderPath(CXXHeaderPath);
++  if (isCXX()) {
++    addCXXHeaderPath(CXXHeaderPath);
+ 
+-  for (auto &path : AdditionalCXXHeaderPaths)
+-    addCXXHeaderPath(path);
++    for (auto &path : AdditionalCXXHeaderPaths)
++      addCXXHeaderPath(path);
++  }
+ 
+   if (getenv("OSXCROSS_MP_INC")) {
+     std::string MacPortsIncludeDir;
+@@ -809,6 +853,10 @@ bool Target::setup() {
+     }
+   }
+ 
++  // Workaround nixos bug.
++  fargs.push_back("-isystem");
++  fargs.push_back(SDKPath + "/usr/include");
++
+   if (OSNum.Num()) {
+     std::string tmp;
+     tmp = "-mmacosx-version-min=";

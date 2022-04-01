@@ -1,0 +1,22 @@
+diff --git a/target.cpp b/target.cpp
+index 82bf65c..f1f39de 100644
+--- a/target.cpp
++++ b/target.cpp
+@@ -711,7 +711,7 @@ bool Target::setup() {
+     fargs.push_back(tmp);
+     tmp.clear();
+ 
+-#ifndef __APPLE__
++//#ifndef __APPLE__
+     if (!findClangIntrinsicHeaders(tmp)) {
+       warn << "cannot find clang intrinsic headers; please report this "
+               "issue to the OSXCross project" << warn.endl();
+@@ -727,7 +727,7 @@ bool Target::setup() {
+     }
+ 
+     tmp.clear();
+-#endif
++//#endif
+ 
+     fargs.push_back("-isysroot");
+     fargs.push_back(SDKPath);

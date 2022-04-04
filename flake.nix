@@ -10,11 +10,16 @@
   outputs = { self, nixpkgs, flake-utils }: {
     lib.toolchain = { llvmPackages, osxcross-wrapper, macos_sdk, cctools, makeWrapper, runCommand }: runCommand "osxcross-toolchain" {
       buildInputs = [ makeWrapper ];
+      passthru = {
+        inherit macos_sdk;
+        target = macos_sdk.target;
+        version = macos_sdk.version;
+      };
     } ''
-      TARGET=darwin20.4
+      TARGET=${macos_sdk.target}
       mkdir -p $out/SDK
-      ln -s ${macos_sdk} $out/SDK/MacOSX11.3.sdk
-      SDK_ROOT=$out/SDK/MacOSX11.3.sdk
+      ln -s ${macos_sdk} $out/SDK/MacOSX${macos_sdk.version}.sdk
+      SDK_ROOT=$out/SDK/MacOSX${macos_sdk.version}.sdk
 
       function create_wrapper_link
       {
@@ -92,7 +97,7 @@
       for arch in "x86_64" "aarch64" "arm64" "arm64e" ; do
         for CCTOOL in ${cctools}/bin/*; do
           CCTOOL_FNAME=$(basename $CCTOOL)
-          ln -s "$CCTOOL" "$out/bin/$(echo "$CCTOOL_FNAME" | sed "s/x86_64/$arch/g")"
+          ln -s "$CCTOOL" "$out/bin/$(echo "$CCTOOL_FNAME" | sed "s/x86_64/$arch/g" | sed "s/darwin20.4/$TARGET/g")"
         done
       done
     '';
@@ -136,7 +141,29 @@
         packages.macossdk_11_3 = pkgs.fetchzip {
           url = "https://github.com/phracker/MacOSX-SDKs/releases/download/11.3/MacOSX11.3.sdk.tar.xz";
           sha256 = "sha256-BoFWhRSHaD0j3dzDOFtGJ6DiRrdzMJhkjxztxCluFKo=";
+          passthru = {
+            version = "11.3";
+            target = "darwin20.4";
+            x86_64h_supported = true;
+            i386_supported = false;
+            arm_supported = true;
+            osx_version_min = "10.9";
+          };
         };
-        packages.toolchain = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_11_3; cctools = selfpkgs.cctools; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
+        packages.macossdk_12_3 = pkgs.fetchzip {
+          url = "https://github.com/roblabla/MacOSX-SDKs/releases/download/12.x/MacOSX12.3.sdk.tar.xz";
+          sha256 = "sha256-/z2m/MjwQ8j+F3kZw+/ZnI69bF4UA9hZJrJtKj+A9kU";
+          passthru = {
+            version = "12.3";
+            target = "darwin21.4";
+            x86_64h_supported = true;
+            i386_supported = false;
+            arm_supported = true;
+            osx_version_min = "10.9";
+          };
+        };
+        packages.toolchain_11_3 = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_11_3; cctools = selfpkgs.cctools; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
+        packages.toolchain_12_3 = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_12_3; cctools = selfpkgs.cctools; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
+        packages.toolchain = selfpkgs.toolchain_11_3;
       });
 }

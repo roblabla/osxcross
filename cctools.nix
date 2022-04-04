@@ -18,13 +18,13 @@ in
 
 clangStdenv.mkDerivation {
   pname = "${targetPrefix}cctools-port";
-  version = "949.0.1";
+  version = "973.0.1";
 
   src = fetchFromGitHub {
     owner  = "tpoechtrager";
     repo   = "cctools-port";
-    rev    = "43f32a4c61b5ba7fde011e816136c550b1b3146f";
-    sha256 = "10yc5smiczzm62q6ijqccc58bwmfhc897f3bwa5i9j98csqsjj0k";
+    rev    = "6540086c5e12e9c1649fed524b527d8c1793ddc0";
+    sha256 = "sha256-s0Pzbk+h23UYlhqQkOt6NbvPSi6aSjk/FVY0VkbPQ0o=";
   };
 
   outputs = [ "out" "dev" "man" ];
@@ -33,7 +33,7 @@ clangStdenv.mkDerivation {
   buildInputs = [ libuuid libtapi ]
     ++ lib.optionals stdenv.isDarwin [ libobjc ];
 
-  patches = [ ./ld-ignore-rpath-link.patch ./ld-rpath-nonfinal.patch ];
+  # patches = [ ./ld-ignore-rpath-link.patch ./ld-rpath-nonfinal.patch ];
 
   __propagatedImpureHostDeps = [
     # As far as I can tell, otool from cctools is the only thing that depends on these two, and we should fix them
@@ -56,9 +56,6 @@ clangStdenv.mkDerivation {
       --replace "-isystem /usr/local/include -isystem /usr/pkg/include" "" \
       --replace "-L/usr/local/lib" "" \
 
-    substituteInPlace cctools/include/Makefile \
-      --replace "/bin/" ""
-
     patchShebangs tools
     sed -i -e 's/which/type -P/' tools/*.sh
 
@@ -77,10 +74,6 @@ clangStdenv.mkDerivation {
   '';
 
   preInstall = ''
-    pushd include
-    make DSTROOT=$out/include RC_OS=common install
-    popd
-
     installManPage ar/ar.{1,5}
   '';
 

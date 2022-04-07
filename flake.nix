@@ -94,7 +94,7 @@
       create_wrapper_link xcrun 1
       create_wrapper_link xcodebuild 1
 
-      for arch in "x86_64" "aarch64" "arm64" "arm64e" ; do
+      for arch in "x86_64h" "x86_64" "aarch64" "arm64" "arm64e" ; do
         for CCTOOL in ${cctools}/bin/*; do
           CCTOOL_FNAME=$(basename $CCTOOL)
           ln -s "$CCTOOL" "$out/bin/$(echo "$CCTOOL_FNAME" | sed "s/x86_64/$arch/g" | sed "s/darwin20.4/$TARGET/g")"

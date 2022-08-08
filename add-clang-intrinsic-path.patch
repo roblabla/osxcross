@@ -1,16 +1,16 @@
 diff --git a/target.cpp b/target.cpp
-index 82bf65c..56fb01b 100644
+index 82bf65c..4bf8ce6 100644
 --- a/target.cpp
 +++ b/target.cpp
-@@ -426,6 +463,11 @@ do {                                                                           \
-     TRYDIR2(intrinsicpath);
-   }
- 
+@@ -389,6 +389,11 @@ do {                                                                           \
+ #define TRYDIR2(libdir) TRYDIR(clangbindir, libdir)
+ #define TRYDIR3(libdir) TRYDIR(std::string(), libdir)
+
 +  char *env = getenv("OSXCROSS_CLANG_INTRINSIC_PATH");
 +  if (env != NULL) {
 +    TRYDIR3(env);
 +  }
 +
-   return false;
- #undef TRYDIR
- #undef TRYDIR2
+ #ifdef __CYGWIN__
+ #ifdef __x86_64__
+   TRYDIR2("/../lib/clang/x86_64-pc-cygwin");

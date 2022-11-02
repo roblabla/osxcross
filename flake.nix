@@ -158,8 +158,21 @@
             osx_version_min = "10.9";
           };
         };
+        packages.macossdk_13_0 = pkgs.fetchzip {
+          url = "https://github.com/roblabla/MacOSX-SDKs/releases/download/13.0/MacOSX13.0.sdk.tar.xz";
+          sha256 = "sha256-b47xXh/ZwdRpQVvS1m6z+HFfxktrn5iLspiL0dl46qk=";
+          passthru = {
+            version = "13.0";
+            target = "darwin22.1";
+            x86_64h_supported = true;
+            i386_supported = false;
+            arm_supported = true;
+            osx_version_min = "10.13";
+          };
+        };
         packages.toolchain_11_3 = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_11_3; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
         packages.toolchain_12_3 = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_12_3; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
+        packages.toolchain_13_0 = self.lib.toolchain { llvmPackages = pkgs.llvmPackages_13; osxcross-wrapper = selfpkgs.osxcross-wrapper; macos_sdk = selfpkgs.macossdk_13_0; makeWrapper = pkgs.makeWrapper; runCommand = pkgs.runCommand; };
         packages.toolchain = selfpkgs.toolchain_11_3;
       });
 }

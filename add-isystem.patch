@@ -23,13 +23,15 @@ index 82bf65c..e2206ef 100644
  
    if (getenv("OSXCROSS_MP_INC")) {
      std::string MacPortsIncludeDir;
-@@ -809,6 +853,10 @@ bool Target::setup() {
+@@ -809,6 +853,12 @@ bool Target::setup() {
      }
    }
  
 +  // Workaround nixos bug.
 +  fargs.push_back("-isystem");
 +  fargs.push_back(SDKPath + "/usr/include");
++  fargs.push_back("-iframework");
++  fargs.push_back(SDKPath + "/System/Library/Frameworks");
 +
    if (OSNum.Num()) {
      std::string tmp;
